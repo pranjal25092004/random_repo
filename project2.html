@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>TO DO LIST</title>
+
+        <link rel="website icon" href="/rootfolder/img/todo.png">
+        <!-- <link rel="stylesheet" href="project2.css"> -->
+    </head>
+
+    <body>
+        <div class="container">
+            <h1>To do List</h1>
+            <div class="inp" style="margin-bottom: 10px;">
+                <input type="text" name="taskInput" id="taskInput" placeholder="Add a task" autocomplete="off">
+                <button id="addTask" onclick="addTask()">Add Task</button>
+            </div>
+
+            <div class="tabs" style="margin-bottom: 10px;">
+                <button id="allTasksTab" class="active" onclick="showAll()">All</button>
+                <button id="pendingTasksTab" onclick="showPending()">Pending</button>
+                <button id="completedTasksTab" onclick="showCompleted()">Completed</button>
+            </div>
+
+            <div id="newTasks"></div>
+            <div id="message"></div>
+        </div>
+
+        <script>
+            function addTask() {
+                // Add Task functionalities
+                var taskInput = document.getElementById("taskInput");
+                var message = document.getElementById("message");
+                var newTask = document.getElementById("newTasks");
+
+                var taskText = taskInput.value.trim();
+
+                // Validation
+                if (taskText == "")
+                {
+                    message.innerHTML = "Please enter a task!";
+                    return;
+                }
+
+                var taskElement = document.createElement("div");
+                taskElement.className = "task"; 
+
+                var taskTextSpan = document.createElement("span");
+                taskTextSpan.textContent = taskText;
+
+                var editButton = document.createElement("button");
+                editButton.textContent = "Edit";
+
+                // Edit Button Functionality
+                editButton.onclick = function() {
+                    // Replace the task text by an input field
+                    var currentTaskText = taskTextSpan.textContent;
+                    var editInput = document.createElement("input");
+                    editInput.value = currentTaskText;
+                    taskElement.replaceChild(editInput, taskTextSpan);
+
+                    // Remove the three buttons
+                    taskElement.removeChild(editButton);
+                    taskElement.removeChild(deleteButton);
+                    taskElement.removeChild(comButton);
+
+                    // Save Button
+                    var saveButton = document.createElement("button");
+                    saveButton.textContent = "Save";
+
+                    saveButton.onclick = function() {
+                        taskTextSpan.textContent = editInput.value;
+                        taskElement.replaceChild(taskTextSpan, editInput);
+
+                        taskElement.removeChild(saveButton);
+                        taskElement.removeChild(cancelButton);
+
+                        taskElement.appendChild(editButton);
+                        taskElement.appendChild(deleteButton);
+                        taskElement.appendChild(comButton);
+                    };
+
+                    taskElement.appendChild(saveButton);
+
+                    // Cancel Button
+                    var cancelButton = document.createElement("button");
+                    cancelButton.textContent = "Cancel";
+
+                    cancelButton.onclick = function() {
+                        taskTextSpan.textContent = taskText;
+                        taskElement.replaceChild(taskTextSpan, editInput);
+
+                        taskElement.removeChild(saveButton);
+                        taskElement.removeChild(cancelButton);
+
+                        taskElement.appendChild(editButton);
+                        taskElement.appendChild(deleteButton);
+                        taskElement.appendChild(comButton);
+                    };
+
+                    taskElement.appendChild(cancelButton);
+                };
+
+                var deleteButton = document.createElement("button");
+                deleteButton.textContent = "Delete";
+
+                // Delete Button Fuctionality
+                deleteButton.onclick = function() {
+                    taskElement.remove();
+                }
+
+                var comButton = document.createElement("button");
+                comButton.className = "comButton";
+                comButton.textContent = "Mark as completed";
+
+                // Mark as Completed Button Functionality
+                comButton.onclick = function() {
+                    if (comButton.textContent == "Mark as completed") {
+                        comButton.textContent = "Mark as pending";
+                    } else {
+                        comButton.textContent = "Mark as completed";
+                    }
+                };
+                
+                // Append elements to taskElement
+                taskElement.appendChild(taskTextSpan);
+                taskElement.appendChild(editButton);
+                taskElement.appendChild(deleteButton);
+                taskElement.appendChild(comButton);
+
+                // Append taskElement to newTask container
+                newTask.appendChild(taskElement);
+                
+                // Clear input and message
+                taskInput.value = "";
+                message.innerHTML = "";
+            };
+
+            // All tasks are inside taskElement which is a div.task
+            function showAll() {
+                var tasks = document.querySelectorAll(".task");
+                tasks.forEach(function(task) {
+                    task.style.display = "flex";
+                });
+            };
+            
+            function showPending() {
+                var tasks = document.querySelectorAll(".task");
+                tasks.forEach(function(task) {
+                    var comButton = task.querySelector(".comButton");
+
+                    if (comButton.textContent == "Mark as completed")
+                        task.style.display = "flex";
+                    else
+                        task.style.display = "none";
+                });
+            };
+
+            function showCompleted() {
+                var tasks = document.querySelectorAll(".task");
+                tasks.forEach(function(task) {
+                    var comButton = task.querySelector(".comButton");
+
+                    if (comButton.textContent == "Mark as pending")
+                        task.style.display = "flex";
+                    else
+                        task.style.display = "none";
+                });
+            };
+        </script>
+    </body>
+</html>
